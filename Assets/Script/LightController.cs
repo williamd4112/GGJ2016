@@ -62,12 +62,22 @@ public class LightController : MonoBehaviour {
             }
             else if (t.phase == TouchPhase.Stationary)
             {
-                if (i == 0) m_SightScaleUp = true;
-                else m_WeaponScaleUp = true;
+                if (i == 0)
+                {
+                    m_SightScaleUp = true;
+                }
+                else
+                {
+                    m_WeaponScaleUp = true;
+                    m_Weapon.gameObject.SetActiveRecursively(true);
+                }
             }
             else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
             {
                 light.enabled = false;
+
+                if (i == 1)
+                    m_Weapon.gameObject.SetActiveRecursively(false);
             }
             i++;
             i %= 2;
