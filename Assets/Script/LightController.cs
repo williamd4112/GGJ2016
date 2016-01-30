@@ -20,6 +20,8 @@ public class LightController : MonoBehaviour {
 
     [SerializeField]
     private GameObject m_MagicCircleTemplate;
+    [SerializeField]
+    private AudioClip m_MagicSound;
 
     [SerializeField]
     private float m_Speed = 2.2f;
@@ -27,6 +29,9 @@ public class LightController : MonoBehaviour {
     private int m_NormalMagicConsume = 10;
 
     private ManaTank m_ManaTank;
+
+    [SerializeField]
+    private Rigidbody m_PlayerBody;
 
     private bool m_SightScaleUp = false;
 
@@ -51,11 +56,7 @@ public class LightController : MonoBehaviour {
 
             if (t.phase == TouchPhase.Began)
             {
-                if(i == 0)
-                {
-                    moveLight(light, t.position, (i == 1));
-                }
-                else if (i == 1)
+                if (i == 1)
                 {
                     genMagicalCircle(t.position);
                 }
@@ -63,7 +64,8 @@ public class LightController : MonoBehaviour {
             else if(t.phase == TouchPhase.Moved)
             {
                 if(i == 0)
-                    moveLight(light, t.position, false);
+                    movePlayer(t.deltaPosition);
+
             }
             else if (t.phase == TouchPhase.Stationary)
             {
@@ -96,37 +98,36 @@ public class LightController : MonoBehaviour {
 
             if (m_ManaTank.Value > m_NormalMagicConsume)
             {
+                if (m_MagicSound != null)
+                    AudioSource.PlayClipAtPoint(m_MagicSound, transform.position);
                 GameObject dummy = GameObject.Instantiate(m_MagicCircleTemplate, pos, transform.rotation) as GameObject;
                 m_ManaTank.ChangeValue(-m_NormalMagicConsume);
             }
         }
     }
 
-    void moveLight(Light light, Vector2 mousePos, bool isMagic)
+    void movePlayer(Vector2 delta)
     {
-        Ray camRay = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit floorHit;
+        m_PlayerBody.MovePosition(m_PlayerBody.transform.position + new Vector3(delta.x, delta.y, 0));
+    }
 
-        if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
-        {
-            float originY = light.transform.position.y;
-            Vector3 pos = floorHit.point;
-            pos.y = originY;
-            light.transform.position = Vector3.Lerp(light.transform.position, pos, Time.deltaTime * m_Speed);
-        }
+    void moveLight(Light light, Vector2 mousePos)
+    {
+        //Ray camRay = Camera.main.ScreenPointToRay(mousePos);
+        //RaycastHit floorHit;
+
+        //if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+        //{
+        //    float originY = light.transform.position.y;
+        //    Vector3 pos = floorHit.point;
+        //    pos.y = originY;
+        //    light.transform.position = Vector3.Lerp(light.transform.position, pos, Time.deltaTime * m_Speed);
+        //}
     }
 
     void scaleLight(Light light, float rate, float target, bool immediate)
     {
-        if (immediate)
-            light.range = target;
-        else
-            light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
-
-        SphereCollider collider = light.GetComponent<SphereCollider>();
-        if(collider != null)
-        {
-            collider.radius = light.range / 10;
-        }
+        light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
+        light.spotAngle = light.range;
     }
 }

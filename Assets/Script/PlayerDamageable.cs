@@ -14,7 +14,7 @@ public class PlayerDamageable : MonoBehaviour {
     [SerializeField]
     private Hearts m_Hearts;
     [SerializeField]
-    private float m_HitDelay = 1.0f;
+    private float m_HitDelay = 0.5f;
 
     private bool m_IsDamageable = true;
 
@@ -30,9 +30,9 @@ public class PlayerDamageable : MonoBehaviour {
 
     void OnCollisionStay(Collision other)
     {
-        Debug.Log(other.gameObject);
         if(m_IsDamageable && other.gameObject.CompareTag("Enemy"))
         {
+            Debug.Log(other.gameObject);
             m_Hearts.Dmg();
             StartCoroutine(Countdown(m_HitDelay));
             m_IsDamageable = false;
