@@ -54,6 +54,8 @@ public class Damageable : MonoBehaviour {
         {
 
         }
+        if (gameObject.CompareTag("Enemy"))
+            EnemyMaker.ReturnEnemy();
         Destroy(gameObject);
     }
 
