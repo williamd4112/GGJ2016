@@ -26,7 +26,12 @@ public class Hearts : MonoBehaviour {
 	}
 
 	public void Dmg(){
+        if(index < 0)
+        {
+            Application.LoadLevel(Application.loadedLevel);
+        }
+
 		heart [index].SetActive (false);
-		index--;
+        index--;
 	}
 }

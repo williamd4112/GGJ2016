@@ -16,6 +16,9 @@ public class TestScaleTween : MonoBehaviour {
 	private float desDur = 1.0f;
 	[SerializeField]
 	private GameObject flare;
+
+    private bool isDestroy = false;
+
 	// Use this for initialization
 	void Start () {
 		LeanTween.scale (this.gameObject, new Vector3 (scales, scales, scales), dur).setEase(LeanTweenType.easeOutBack);
@@ -30,11 +33,14 @@ public class TestScaleTween : MonoBehaviour {
 		this.GetComponent<_2dxFX_Additive> ()._Alpha = temp;
 		this.transform.Rotate (new Vector3 (0, 0, angl) * Time.deltaTime);
 
+        if (isDestroy)
+            Destroy(gameObject);
 	}
 
 	IEnumerator Destroy(){
 		yield return new WaitForSeconds (desTime);
 		LeanTween.scale (this.gameObject, new Vector3 (0, 0, 0), desDur).setEase (LeanTweenType.easeInBack);
 		Instantiate (flare, this.transform.position, Quaternion.identity);
-	}
+        isDestroy = true;
+    }
 }
