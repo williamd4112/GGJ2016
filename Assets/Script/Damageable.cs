@@ -11,11 +11,17 @@ public class Damageable : MonoBehaviour {
     private GameObject m_OnDeathEffect;
     [SerializeField]
     private AudioClip m_OnDeathSound;
-
+	[SerializeField]
+	private ParticleSystem m_HitPart;
     [SerializeField]
     private int m_Health;
     [SerializeField]
     private int m_MaxHealth = 100;
+	[SerializeField]
+	private bool isFirst = true;
+	[SerializeField]
+	private float recovTime = 5.0f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -26,17 +32,20 @@ public class Damageable : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
     public void OnHit(int damageAmount)
     {
-        if (m_OnHitEffect != null)
-        {
-            m_OnHitEffect.SetActiveRecursively(true);
-        }
-        Debug.LogFormat("{0} hit", gameObject);
-        ChangeHealth(damageAmount);
+		if (isFirst) {
+			isFirst = false;
+			if (m_OnHitEffect != null) {
+				m_OnHitEffect.SetActiveRecursively (true);
+			}
+			Debug.LogFormat ("{0} hit", gameObject);
+			ChangeHealth (damageAmount);
+			StartCoroutine ("Recover");
+		}
     }
 
     public void OnDeath()
@@ -55,4 +64,9 @@ public class Damageable : MonoBehaviour {
         if (m_Health <= 0)
             OnDeath();
     }
+
+	IEnumerator Recover(){
+		yield return new WaitForSeconds (recovTime);
+		isFirst = true;
+	}
 }
