@@ -54,8 +54,16 @@ public class LightController : MonoBehaviour {
 
             if (t.phase == TouchPhase.Began)
             {
-                light.enabled = true;
-                moveLight(light, t.position, (i == 1));
+                if(i == 0 || (i == 1 && isWeaponInSight()))
+                {
+                    light.enabled = true;
+                    moveLight(light, t.position, (i == 1));
+                }
+
+                if (i == 1)
+                {
+                    m_Weapon.gameObject.SetActiveRecursively(true);
+                }
             }
             else if (t.phase == TouchPhase.Stationary)
             {
@@ -66,15 +74,17 @@ public class LightController : MonoBehaviour {
                 else
                 {
                     m_WeaponScaleUp = true;
-                    m_Weapon.gameObject.SetActiveRecursively(true);
                 }
             }
             else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
             {
                 light.enabled = false;
+                m_Weapon.enabled = false;
                 m_Weapon.gameObject.SetActiveRecursively(false);
-
-                m_SightScaleUp = m_WeaponScaleUp = false; 
+                if (i == 0)
+                    m_SightScaleUp = m_WeaponScaleUp = false;
+                else
+                    m_WeaponScaleUp = false;
             }
             i++;
             i %= 2;
@@ -88,6 +98,11 @@ public class LightController : MonoBehaviour {
 
         scaleLight(m_Sight, m_SightScaleRate, (m_SightScaleUp) ? m_SightScaleUpRadius : m_SightScaleDownRadius, !m_SightScaleUp);
         scaleLight(m_Weapon, m_WeaponScaleRate, (m_WeaponScaleUp) ? m_WeaponScaleUpRadius : m_WeaponScaleDownRadius, !m_WeaponScaleUp);
+    }
+
+    bool isWeaponInSight()
+    {
+        return (Vector3.Distance(m_Sight.transform.position, m_Weapon.transform.position) < m_Sight.range / 10);
     }
 
     void moveLight(Light light, Vector2 mousePos, bool isMagic)
