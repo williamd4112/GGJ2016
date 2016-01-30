@@ -19,6 +19,7 @@ public class EnemyMaker : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		timecount = 0;
+        enemyCount = 0;
 	}
 	
 	// Update is called once per frame
