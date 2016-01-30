@@ -6,6 +6,9 @@ public class Hearts : MonoBehaviour {
 	public static Hearts Instance;
 	public GameObject[] heart;
 
+	public BlockFontText ScoreText;
+	int score;
+
 	int index;
 
 	// Use this for initialization
@@ -14,6 +17,7 @@ public class Hearts : MonoBehaviour {
 			heart [i].SetActive (true);
 		}
 		index = 4;
+		score = 0;
 	}
 
 	void Awake(){
@@ -33,5 +37,10 @@ public class Hearts : MonoBehaviour {
 
 		heart [index].SetActive (false);
         index--;
+	}
+
+	public void GetScore(){
+		score++;
+		ScoreText.text = score.ToString ();
 	}
 }
