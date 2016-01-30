@@ -10,10 +10,17 @@ public class TestScaleTween : MonoBehaviour {
 	private float startTime;
 	[SerializeField]
 	private int angl;
+	[SerializeField]
+	private float desTime = 3.0f;
+	[SerializeField]
+	private float desDur = 1.0f;
+	[SerializeField]
+	private GameObject flare;
 	// Use this for initialization
 	void Start () {
-		LeanTween.scale (this.gameObject, new Vector3 (scales, scales, scales), dur);
+		LeanTween.scale (this.gameObject, new Vector3 (scales, scales, scales), dur).setEase(LeanTweenType.easeOutBack);
 		startTime = Time.time;
+		StartCoroutine ("Destroy");
 	}
 	
 	// Update is called once per frame
@@ -23,5 +30,11 @@ public class TestScaleTween : MonoBehaviour {
 		this.GetComponent<_2dxFX_Additive> ()._Alpha = temp;
 		this.transform.Rotate (new Vector3 (0, 0, angl) * Time.deltaTime);
 
+	}
+
+	IEnumerator Destroy(){
+		yield return new WaitForSeconds (desTime);
+		LeanTween.scale (this.gameObject, new Vector3 (0, 0, 0), desDur).setEase (LeanTweenType.easeInBack);
+		Instantiate (flare, this.transform.position, Quaternion.identity);
 	}
 }

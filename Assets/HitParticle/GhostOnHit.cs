@@ -30,5 +30,6 @@ public class GhostOnHit : MonoBehaviour {
 	}
 
 	public void LightLeave(){
+		
 	}
 }
