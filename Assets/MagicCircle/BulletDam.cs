@@ -18,5 +18,13 @@ public class BulletDam : MonoBehaviour {
 		if (other.gameObject.GetComponent<Damageable> ()) {
 			other.gameObject.GetComponent<Damageable> ().OnHit (DamageAmount);
 		}
+		Destroy (this.gameObject);
+	}
+
+	void OnTriggerEnter(Collider other){
+		if (other.gameObject.GetComponent<Damageable> ()) {
+			other.gameObject.GetComponent<Damageable> ().OnHit (DamageAmount);
+		}
+		Destroy (this.gameObject);
 	}
 }
