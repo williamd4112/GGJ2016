@@ -22,11 +22,8 @@ public class Damageable : MonoBehaviour {
 	[SerializeField]
 	private float recovTime = 5.0f;
 
-
 	// Use this for initialization
 	void Start () {
-        if (m_OnHitEffect != null)
-            m_OnHitEffect.SetActiveRecursively(false);
         m_Health = m_MaxHealth;
 	}
 	
@@ -39,10 +36,9 @@ public class Damageable : MonoBehaviour {
     {
 		if (isFirst) {
 			isFirst = false;
-			if (m_OnHitEffect != null) {
-				m_OnHitEffect.SetActiveRecursively (true);
-			}
-			Debug.LogFormat ("{0} hit", gameObject);
+            GameObject dummy = GameObject.Instantiate(m_OnHitEffect, transform.position, transform.rotation) as GameObject;
+            Destroy(dummy, recovTime);
+            AudioSource.PlayClipAtPoint(m_OnHitSound, transform.position);
 			ChangeHealth (damageAmount);
 			StartCoroutine ("Recover");
 		}
@@ -50,10 +46,6 @@ public class Damageable : MonoBehaviour {
 
     public void OnDeath()
     {
-        if(m_OnDeathEffect != null)
-        {
-
-        }
         if (gameObject.CompareTag("Enemy"))
             EnemyMaker.ReturnEnemy();
         Destroy(gameObject);

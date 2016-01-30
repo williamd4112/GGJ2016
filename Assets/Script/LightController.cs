@@ -44,9 +44,6 @@ public class LightController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        m_SightScaleUp = m_WeaponScaleUp = false;
-
         int i = 0;
         foreach(Touch t in Input.touches)
         {
@@ -75,9 +72,9 @@ public class LightController : MonoBehaviour {
             else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
             {
                 light.enabled = false;
+                m_Weapon.gameObject.SetActiveRecursively(false);
 
-                if (i == 1)
-                    m_Weapon.gameObject.SetActiveRecursively(false);
+                m_SightScaleUp = m_WeaponScaleUp = false; 
             }
             i++;
             i %= 2;
@@ -89,8 +86,8 @@ public class LightController : MonoBehaviour {
             m_MagicCircleInstance = null;
         }
 
-        scaleLight(m_Sight, m_SightScaleRate, (m_SightScaleUp) ? m_SightScaleUpRadius : m_SightScaleDownRadius );
-        scaleLight(m_Weapon, m_WeaponScaleRate, (m_WeaponScaleUp) ? m_WeaponScaleUpRadius : m_WeaponScaleDownRadius);
+        scaleLight(m_Sight, m_SightScaleRate, (m_SightScaleUp) ? m_SightScaleUpRadius : m_SightScaleDownRadius, !m_SightScaleUp);
+        scaleLight(m_Weapon, m_WeaponScaleRate, (m_WeaponScaleUp) ? m_WeaponScaleUpRadius : m_WeaponScaleDownRadius, !m_WeaponScaleUp);
     }
 
     void moveLight(Light light, Vector2 mousePos, bool isMagic)
@@ -110,9 +107,12 @@ public class LightController : MonoBehaviour {
         }
     }
 
-    void scaleLight(Light light, float rate, float target)
+    void scaleLight(Light light, float rate, float target, bool immediate)
     {
-        light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
+        if (immediate)
+            light.range = target;
+        else
+            light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
 
         SphereCollider collider = light.GetComponent<SphereCollider>();
         if(collider != null)
