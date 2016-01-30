@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class LightController : MonoBehaviour {
+    [SerializeField]
+    private Transform m_RefPlane;
 
     [SerializeField]
     private Light m_Sight;
@@ -22,6 +24,10 @@ public class LightController : MonoBehaviour {
     private float m_SightScaleDownRadius;
     [SerializeField]
     private float m_WeaponScaleDownRadius;
+
+    [SerializeField]
+    private GameObject m_MagicCircleTemplate;
+    private GameObject m_MagicCircleInstance = null;
 
     private bool m_SightScaleUp = false;
     private bool m_WeaponScaleUp = false;
@@ -52,46 +58,32 @@ public class LightController : MonoBehaviour {
             if (t.phase == TouchPhase.Began)
             {
                 light.enabled = true;
-                moveLight(light, t.position);
+                moveLight(light, t.position, (i == 1));
             }
             else if (t.phase == TouchPhase.Stationary)
             {
                 if (i == 0) m_SightScaleUp = true;
                 else m_WeaponScaleUp = true;
             }
-            else if(t.phase == TouchPhase.Ended)
+            else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
             {
                 light.enabled = false;
             }
-
-            if (light.enabled)
-                scanAreaForDamage(light.transform.position, light.range);
-
             i++;
             i %= 2;
+        }
 
+        if(m_Weapon.enabled == false && m_MagicCircleInstance != null)
+        {
+            Destroy(m_MagicCircleInstance);
+            m_MagicCircleInstance = null;
         }
 
         scaleLight(m_Sight, m_SightScaleRate, (m_SightScaleUp) ? m_SightScaleUpRadius : m_SightScaleDownRadius );
         scaleLight(m_Weapon, m_WeaponScaleRate, (m_WeaponScaleUp) ? m_WeaponScaleUpRadius : m_WeaponScaleDownRadius);
     }
-    
-    bool projectToPlane(Vector2 mousePos, out Vector2 projPos)
-    {
-        Ray camRay = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit floorHit;
 
-        if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
-        {
-            projPos = floorHit.point;
-            return true;
-        }
-
-        projPos = Vector2.zero;
-        return false;
-    }
-
-    void moveLight(Light light, Vector2 mousePos)
+    void moveLight(Light light, Vector2 mousePos, bool isMagic)
     {
         Ray camRay = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit floorHit;
@@ -102,31 +94,20 @@ public class LightController : MonoBehaviour {
             Vector3 pos = floorHit.point;
             pos.y = originY;
             light.transform.position = pos;
+
+            if(m_MagicCircleInstance == null && isMagic)
+                m_MagicCircleInstance = GameObject.Instantiate(m_MagicCircleTemplate, pos, transform.rotation) as GameObject;
         }
     }
 
     void scaleLight(Light light, float rate, float target)
     {
         light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
-    }
 
-    void scanAreaForDamage(Vector2 center, float radius)
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(center, radius);
-        int i = 0;
-        while (i < hitColliders.Length)
+        SphereCollider collider = light.GetComponent<SphereCollider>();
+        if(collider != null)
         {
-            if(hitColliders[i].gameObject.CompareTag("Enemy"))
-            {
-                Damageable d = hitColliders[i].gameObject.GetComponent<Damageable>();
-                if (d != null)
-                {
-                    d.OnHit(-10);
-                    Debug.Log(hitColliders[i].gameObject);
-                }
-            }
-
-            i++;
+            collider.radius = light.range / 10;
         }
     }
 }
