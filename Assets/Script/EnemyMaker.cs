@@ -14,7 +14,7 @@ public class EnemyMaker : MonoBehaviour {
     public static int enemyCount = 0;
 
     [SerializeField]
-    private static int m_MaxEnemyCount = 10;
+    private static int m_MaxEnemyCount = 60;
 
 	// Use this for initialization
 	void Start () {
