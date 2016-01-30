@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class LightController : MonoBehaviour {
 
@@ -46,6 +47,10 @@ public class LightController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        m_PlayerBody.velocity = Vector3.zero;
+
+        movePlayer(new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical")));
+
         int i = 0;
         foreach(Touch t in Input.touches)
         {
@@ -56,15 +61,17 @@ public class LightController : MonoBehaviour {
 
             if (t.phase == TouchPhase.Began)
             {
-                if (i == 1)
+                if (i != 0)
                 {
                     genMagicalCircle(t.position);
                 }
             }
-            else if(t.phase == TouchPhase.Moved)
+            else if (t.phase == TouchPhase.Moved)
             {
-                if(i == 0)
-                    movePlayer(t.deltaPosition);
+                //if (i == 0)
+                //{
+                //    movePlayer(new Vector3(t.deltaPosition.x, 0, t.deltaPosition.y));
+                //}
 
             }
             else if (t.phase == TouchPhase.Stationary)
@@ -80,7 +87,6 @@ public class LightController : MonoBehaviour {
                     m_SightScaleUp = false;
             }
             i++;
-            i %= 2;
         }
 
         scaleLight(m_Sight, m_SightScaleRate, (m_SightScaleUp) ? m_SightScaleUpRadius : m_SightScaleDownRadius, !m_SightScaleUp);
@@ -106,23 +112,9 @@ public class LightController : MonoBehaviour {
         }
     }
 
-    void movePlayer(Vector2 delta)
+    void movePlayer(Vector3 mousePos)
     {
-        m_PlayerBody.MovePosition(m_PlayerBody.transform.position + new Vector3(delta.x, delta.y, 0));
-    }
-
-    void moveLight(Light light, Vector2 mousePos)
-    {
-        //Ray camRay = Camera.main.ScreenPointToRay(mousePos);
-        //RaycastHit floorHit;
-
-        //if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
-        //{
-        //    float originY = light.transform.position.y;
-        //    Vector3 pos = floorHit.point;
-        //    pos.y = originY;
-        //    light.transform.position = Vector3.Lerp(light.transform.position, pos, Time.deltaTime * m_Speed);
-        //}
+        m_PlayerBody.velocity += mousePos.normalized * m_Speed;
     }
 
     void scaleLight(Light light, float rate, float target, bool immediate)
