@@ -20,7 +20,11 @@ public class LightController : MonoBehaviour {
     private float m_SightScaleDownRadius;
 
     [SerializeField]
+    private int m_SelectMagic = 0;
+    [SerializeField]
     private GameObject m_MagicCircleTemplate;
+    [SerializeField]
+    private GameObject m_IceMagicCircleTemplate;
     [SerializeField]
     private AudioClip m_MagicSound;
 
@@ -48,10 +52,10 @@ public class LightController : MonoBehaviour {
 	
     void FixedUpdate()
     {
-        //m_Character.Move(CrossPlatformInputManager.GetAxis("Horizontal"),
-        //    CrossPlatformInputManager.GetAxis("Vertical"), m_Attack);
-        m_Character.Move(Input.GetAxis("Horizontal"),
-                Input.GetAxis("Vertical"), m_Attack);
+        m_Character.Move(CrossPlatformInputManager.GetAxis("Horizontal"),
+            CrossPlatformInputManager.GetAxis("Vertical"), m_Attack);
+        //m_Character.Move(Input.GetAxis("Horizontal"),
+        //        Input.GetAxis("Vertical"), m_Attack);
         m_Attack = false;
     }
 
@@ -106,7 +110,21 @@ public class LightController : MonoBehaviour {
             {
                 if (m_MagicSound != null)
                     AudioSource.PlayClipAtPoint(m_MagicSound, transform.position);
-                GameObject dummy = GameObject.Instantiate(m_MagicCircleTemplate, pos, transform.rotation) as GameObject;
+
+                GameObject template = m_MagicCircleTemplate;
+                switch(m_SelectMagic)
+                {
+                    case 0:
+                        template = m_MagicCircleTemplate;
+                        break;
+                    case 1:
+                        template = m_IceMagicCircleTemplate;
+                        break;
+                    default:
+                        break;
+                }
+
+                GameObject dummy = GameObject.Instantiate(template, pos, transform.rotation) as GameObject;
                 m_ManaTank.ChangeValue(-m_NormalMagicConsume);
             }
         }
@@ -115,5 +133,10 @@ public class LightController : MonoBehaviour {
     void scaleLight(Light light, float rate, float target, bool immediate)
     {
         light.spotAngle = Mathf.Lerp(light.spotAngle, target, Time.deltaTime * rate);
+    }
+
+    public void SetMagic(int index)
+    {
+        m_SelectMagic = index % 2;
     }
 }

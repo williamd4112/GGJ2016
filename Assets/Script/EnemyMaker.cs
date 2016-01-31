@@ -11,6 +11,7 @@ public class EnemyMaker : MonoBehaviour {
 	public GameObject point2;
 
 	public GameObject enemy;
+    public GameObject[] enemies;
 
 	float timelimit = 1f;
 	float timecount;
@@ -24,6 +25,8 @@ public class EnemyMaker : MonoBehaviour {
     private static float m_Period = 0.00001f;
     private static int m_PlayerKill = 0;
     private static int m_TargetToKill;
+
+    private int select = 0;
 
     // Use this for initialization
     void Start () {
@@ -50,7 +53,8 @@ public class EnemyMaker : MonoBehaviour {
 			float xpos = point1.transform.position.x + Random.value * (point2.transform.position.x - point1.transform.position.x);
 			float zpos = point1.transform.position.z + Random.value * (point2.transform.position.z - point1.transform.position.z);
 			Vector3 newpos = new Vector3 (xpos, 0, zpos);
-			GameObject newenemy = Instantiate (enemy, newpos, Quaternion.Euler (0, 0, 0)) as GameObject;
+			GameObject newenemy = Instantiate (enemies[select++], newpos, Quaternion.Euler (0, 0, 0)) as GameObject;
+            select %= 2;
 			timecount = 0;
             enemyCount++;
 		}

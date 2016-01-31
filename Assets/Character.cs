@@ -24,9 +24,10 @@ public class Character : MonoBehaviour {
 
     public void Move(float h, float v, bool attack)
     {
+        transform.rotation = Quaternion.LookRotation(new Vector3(h, 0, v).normalized,
+            transform.up);
         Vector3 velocity = new Vector3(h, 0, v).normalized * m_WalkSpeed;
         m_Rigidbody.velocity = velocity;
-
         updateAnimator(h, v, attack);
     }
 

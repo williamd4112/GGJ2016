@@ -15,6 +15,10 @@ public class PlayerDamageable : MonoBehaviour {
     private Hearts m_Hearts;
     [SerializeField]
     private float m_HitDelay = 0.5f;
+    [SerializeField]
+    private BloodEffect m_BloodEffectUI;
+    [SerializeField]
+    private AudioClip m_BloodSound;
 
     private bool m_IsDamageable = true;
 
@@ -32,10 +36,12 @@ public class PlayerDamageable : MonoBehaviour {
     {
         if(m_IsDamageable && other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log(other.gameObject);
-            m_Hearts.Dmg();
-            StartCoroutine(Countdown(m_HitDelay));
             m_IsDamageable = false;
+            m_Hearts.Dmg();
+            m_BloodEffectUI.HurtIt();
+            AudioSource.PlayClipAtPoint(m_BloodSound, transform.position);
+            StartCoroutine(Countdown(m_HitDelay));
+            
         }
     }
 
