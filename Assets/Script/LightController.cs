@@ -66,14 +66,6 @@ public class LightController : MonoBehaviour {
                     genMagicalCircle(t.position);
                 }
             }
-            else if (t.phase == TouchPhase.Moved)
-            {
-                //if (i == 0)
-                //{
-                //    movePlayer(new Vector3(t.deltaPosition.x, 0, t.deltaPosition.y));
-                //}
-
-            }
             else if (t.phase == TouchPhase.Stationary)
             {
                 if (i == 0)
@@ -119,7 +111,7 @@ public class LightController : MonoBehaviour {
 
     void scaleLight(Light light, float rate, float target, bool immediate)
     {
-        light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
-        light.spotAngle = light.range;
+        //light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
+        light.spotAngle = Mathf.Lerp(light.spotAngle, target, Time.deltaTime * rate);
     }
 }
