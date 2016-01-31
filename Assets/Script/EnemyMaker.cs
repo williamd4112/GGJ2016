@@ -55,7 +55,7 @@ public class EnemyMaker : MonoBehaviour {
 			Vector3 newpos = new Vector3 (xpos, 0, zpos);
 
            // Debug.LogFormat("Enemey {0}", select);
-            if (enemyCount % 3 == 0 && m_Wave > 4)
+            if (enemyCount % 3 == 0 && m_Wave > 4 && Random.Range(0, 21) % 20 == 0 )
                 select = 2;
             else if (enemyCount % 2 == 0 && m_Wave > 2)
                 select = 1;

@@ -15,6 +15,8 @@ public class Hearts : MonoBehaviour {
 	float timelimit = 1f;
 	int combo;
 
+    public AudioClip m_HealSound;
+
 	// Use this for initialization
 	void Start () {
 		for (int i = 0; i < heart.Length; i++) {
@@ -58,6 +60,7 @@ public class Hearts : MonoBehaviour {
     {
         if(index + 1 < heart.Length)
         {
+            AudioSource.PlayClipAtPoint(m_HealSound, transform.position);
             heart[index++].SetActive(true);
         }
     }
