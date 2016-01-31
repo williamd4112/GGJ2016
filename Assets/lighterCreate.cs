@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class lighterCreate : MonoBehaviour {
 	public GameObject spark;
@@ -14,10 +13,12 @@ public class lighterCreate : MonoBehaviour {
 	public GameObject title;
 
 	public GameObject sound;
+	public GameObject sound2;
+
 
 	int c = 0;
 	//int a = 0;
-	bool changeScene = false;
+	public bool changeScene = false;
 	bool black = false;
 	bool canLit = true;
 	// Use this for initialization
@@ -58,20 +59,23 @@ public class lighterCreate : MonoBehaviour {
 		if (black) {
 			//a++;
 			blackPanel.GetComponent<Image> ().color += new Color32(0, 0, 0, 2);
-			if (blackPanel.GetComponent<Image> ().color.a >= 255) {
-				changeScene = true;
-			}
+			cam.GetComponent<AudioSource> ().volume -= 0.005f;
+
 		} 
-		if (changeScene) {
-            //change the scene here.
-            //Application.LoadLevel("Stage1");
+		if (blackPanel.GetComponent<Image> ().color == new Color32(0, 0, 0, 254)) {
+			//change the scene here.
+			changeScene = true;
+
+			Application.LoadLevel("Stage1");
+
 		}
 	}
 
 	public void click(){
+		sound2.GetComponent<AudioSource> ().Play ();
 		Destroy (fireLight);
 		candleFire.GetComponent<ParticleSystem> ().Stop ();
 		black = true;
-        Application.LoadLevel("Stage1");
-    }
+
+	}
 }
