@@ -24,7 +24,15 @@ public class LightController : MonoBehaviour {
     [SerializeField]
     private GameObject m_MagicCircleTemplate;
     [SerializeField]
+    private GameObject m_MagicCircleIgnitionTemplate;
+    [SerializeField]
     private GameObject m_IceMagicCircleTemplate;
+    [SerializeField]
+    private GameObject m_IceMagicCircleIgnitionTemplate;
+    [SerializeField]
+    private GameObject m_LightingtMagicCircleTemplate;
+    [SerializeField]
+    private GameObject m_LightingMagicCircleIgnitionTemplate;
     [SerializeField]
     private AudioClip m_MagicSound;
 
@@ -61,6 +69,11 @@ public class LightController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+        //if (Input.GetMouseButton(0))
+        //{
+        //    genMagicalCircle(Input.mousePosition);
+        //}
 
         int i = 0;
         foreach(Touch t in Input.touches)
@@ -112,19 +125,28 @@ public class LightController : MonoBehaviour {
                     AudioSource.PlayClipAtPoint(m_MagicSound, transform.position);
 
                 GameObject template = m_MagicCircleTemplate;
+                GameObject ignition = m_MagicCircleIgnitionTemplate;
                 switch(m_SelectMagic)
                 {
                     case 0:
                         template = m_MagicCircleTemplate;
+                        ignition = m_MagicCircleIgnitionTemplate;
                         break;
                     case 1:
                         template = m_IceMagicCircleTemplate;
+                        ignition = m_IceMagicCircleIgnitionTemplate;
+                        break;
+                    case 2:
+                        template = m_LightingtMagicCircleTemplate;
+                        ignition = m_LightingMagicCircleIgnitionTemplate;
                         break;
                     default:
                         break;
                 }
 
                 GameObject dummy = GameObject.Instantiate(template, pos, transform.rotation) as GameObject;
+                GameObject ignition_dummy = GameObject.Instantiate(ignition, pos, transform.rotation) as GameObject;
+                Destroy(ignition_dummy, ignition_dummy.GetComponent<ParticleSystem>().duration);
                 m_ManaTank.ChangeValue(-m_NormalMagicConsume);
             }
         }
@@ -137,6 +159,6 @@ public class LightController : MonoBehaviour {
 
     public void SetMagic(int index)
     {
-        m_SelectMagic = index % 2;
+        m_SelectMagic = index % 3;
     }
 }

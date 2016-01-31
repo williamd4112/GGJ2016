@@ -54,6 +54,14 @@ public class Hearts : MonoBehaviour {
         index--;
 	}
 
+    public void Heal()
+    {
+        if(index + 1 < heart.Length)
+        {
+            heart[index++].SetActive(true);
+        }
+    }
+
 	public void GetScore(){
 		score++;
 		ScoreText.text = score.ToString ();

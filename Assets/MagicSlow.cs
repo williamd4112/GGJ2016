@@ -3,6 +3,9 @@ using System.Collections;
 
 public class MagicSlow : MonoBehaviour {
 
+    [SerializeField]
+    private GameObject m_Effect;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -13,16 +16,24 @@ public class MagicSlow : MonoBehaviour {
 	
 	}
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            GameObject.Instantiate(m_Effect, other.transform.position, other.transform.rotation);
+        }
+    }
+
     void OnTriggerStay(Collider other)
     {
-            if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy"))
+        {
+            NavMeshAgent agent = other.GetComponent<NavMeshAgent>();
+            if (agent != null)
             {
-                NavMeshAgent agent = other.GetComponent<NavMeshAgent>();
-                if (agent != null)
-                {
-                    agent.speed = 0;
-                }
+                agent.speed = 0;
             }
-  
+        }
+
     }
 }

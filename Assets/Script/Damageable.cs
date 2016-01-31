@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Damageable : MonoBehaviour {
 
+    public delegate void DamageEvent();
+
     [SerializeField]
     private GameObject m_OnHitEffect;
     [SerializeField]
@@ -22,9 +24,24 @@ public class Damageable : MonoBehaviour {
 	[SerializeField]
 	private float recovTime = 5.0f;
 
+    private Hearts m_Heart;
+
+    private DamageEvent m_DmgEvents;
+    public void RegisterDamageEvent(DamageEvent e)
+    {
+        m_DmgEvents += e;
+    }
+
+    public void InvokeDamageEvent()
+    {
+        if (m_DmgEvents != null)
+            m_DmgEvents.Invoke();
+    }
+
 	// Use this for initialization
 	void Start () {
         m_Health = m_MaxHealth;
+        m_Heart = GameObject.Find("Hearts").GetComponent<Hearts>();
 	}
 	
 	// Update is called once per frame
@@ -36,10 +53,14 @@ public class Damageable : MonoBehaviour {
     {
 		if (isFirst) {
 			isFirst = false;
+
             GameObject dummy = GameObject.Instantiate(m_OnHitEffect, transform.position, transform.rotation) as GameObject;
             Destroy(dummy, recovTime);
+
             AudioSource.PlayClipAtPoint(m_OnHitSound, transform.position);
-			ChangeHealth (damageAmount);
+            Camera.main.GetComponent<CamShake>().ShakeAndBake();
+            ChangeHealth (damageAmount);
+            InvokeDamageEvent();
 			StartCoroutine ("Recover");
 		}
     }
@@ -47,7 +68,13 @@ public class Damageable : MonoBehaviour {
     public void OnDeath()
     {
         if (gameObject.CompareTag("Enemy"))
+        {
+            if(Random.Range(0, 6) % 5 == 0)
+            {
+                m_Heart.Heal();
+            }
             EnemyMaker.ReturnEnemy();
+        }
 		Hearts.Instance.GetScore ();
         Destroy(gameObject);
     }
@@ -55,7 +82,6 @@ public class Damageable : MonoBehaviour {
     void ChangeHealth(int diff)
     {
         m_Health = Mathf.Clamp(m_Health + diff, 0, m_MaxHealth);
-        Debug.Log(m_Health);
         if (m_Health <= 0)
             OnDeath();
     }

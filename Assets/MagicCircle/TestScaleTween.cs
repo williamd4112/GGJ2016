@@ -40,7 +40,8 @@ public class TestScaleTween : MonoBehaviour {
 	IEnumerator Destroy(){
 		yield return new WaitForSeconds (desTime);
 		LeanTween.scale (this.gameObject, new Vector3 (0, 0, 0), desDur).setEase (LeanTweenType.easeInBack);
-		Instantiate (flare, this.transform.position, Quaternion.identity);
+		GameObject dummy = Instantiate (flare, this.transform.position, Quaternion.identity) as GameObject;
+        Destroy(dummy, dummy.GetComponent<ParticleSystem>().duration);
         isDestroy = true;
     }
 }

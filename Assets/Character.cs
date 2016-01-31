@@ -34,7 +34,6 @@ public class Character : MonoBehaviour {
     private void updateAnimator(float h, float v, bool attack)
     {
         m_Animator.SetFloat("Speed", m_Rigidbody.velocity.magnitude);
-        Debug.Log(m_Rigidbody.velocity.magnitude);
         m_Animator.SetBool("Attack", attack);
     }
 }

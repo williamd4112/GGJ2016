@@ -24,7 +24,6 @@ namespace CompleteProject
 
 				// ... set the destination of the nav mesh agent to the player.
 			nav.SetDestination (player.transform.position);
-            Debug.Log(player.transform.position);
             nav.speed = originSpeed;
 
 		}

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class lighterCreate : MonoBehaviour {
 	public GameObject spark;
@@ -57,12 +58,13 @@ public class lighterCreate : MonoBehaviour {
 		if (black) {
 			//a++;
 			blackPanel.GetComponent<Image> ().color += new Color32(0, 0, 0, 2);
-			if (blackPanel.GetComponent<Image> ().color.a == 255) {
+			if (blackPanel.GetComponent<Image> ().color.a >= 255) {
 				changeScene = true;
 			}
 		} 
 		if (changeScene) {
-			//change the scene here.
+            //change the scene here.
+            //Application.LoadLevel("Stage1");
 		}
 	}
 
@@ -70,7 +72,6 @@ public class lighterCreate : MonoBehaviour {
 		Destroy (fireLight);
 		candleFire.GetComponent<ParticleSystem> ().Stop ();
 		black = true;
-
-        
-	}
+        Application.LoadLevel("Stage1");
+    }
 }
