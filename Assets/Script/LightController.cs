@@ -32,7 +32,8 @@ public class LightController : MonoBehaviour {
     private ManaTank m_ManaTank;
 
     [SerializeField]
-    private Rigidbody m_PlayerBody;
+    private Character m_Character;
+    private bool m_Attack = false;
 
     private bool m_SightScaleUp = false;
 
@@ -45,11 +46,17 @@ public class LightController : MonoBehaviour {
         m_ManaTank = GetComponent<ManaTank>();
     }
 	
+    void FixedUpdate()
+    {
+        //m_Character.Move(CrossPlatformInputManager.GetAxis("Horizontal"),
+        //    CrossPlatformInputManager.GetAxis("Vertical"), m_Attack);
+        m_Character.Move(Input.GetAxis("Horizontal"),
+                Input.GetAxis("Vertical"), m_Attack);
+        m_Attack = false;
+    }
+
 	// Update is called once per frame
 	void Update () {
-        m_PlayerBody.velocity = Vector3.zero;
-
-        movePlayer(new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical")));
 
         int i = 0;
         foreach(Touch t in Input.touches)
@@ -64,6 +71,7 @@ public class LightController : MonoBehaviour {
                 if (i != 0)
                 {
                     genMagicalCircle(t.position);
+                    m_Attack = true;
                 }
             }
             else if (t.phase == TouchPhase.Stationary)
@@ -104,14 +112,8 @@ public class LightController : MonoBehaviour {
         }
     }
 
-    void movePlayer(Vector3 mousePos)
-    {
-        m_PlayerBody.velocity += mousePos.normalized * m_Speed;
-    }
-
     void scaleLight(Light light, float rate, float target, bool immediate)
     {
-        //light.range = Mathf.Lerp(light.range, target, Time.deltaTime * rate);
         light.spotAngle = Mathf.Lerp(light.spotAngle, target, Time.deltaTime * rate);
     }
 }
